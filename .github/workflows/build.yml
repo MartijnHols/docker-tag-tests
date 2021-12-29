@@ -23,7 +23,7 @@ jobs:
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-      - if: steps.is-release.outputs.match == 'true'
+      - if: steps.is-release-candidate.outputs.match == 'true'
         run: echo "release-candidate"
       - if: steps.is-release.outputs.match == 'true'
         run: echo "release"
