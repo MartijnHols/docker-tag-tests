@@ -7,7 +7,8 @@ jobs:
   deploy:
     name: "Publish Docker image"
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
+    # Production and acceptance are protected docker-tags, only available through pushing git-tags
+    if: github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/production' && github.ref != 'refs/heads/acceptance'
     steps:
       - id: is-release-candidate
         run: echo "::set-output name=match::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] && echo "true" || echo "false")"
