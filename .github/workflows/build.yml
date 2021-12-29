@@ -11,10 +11,11 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/production' && github.ref != 'refs/heads/acceptance'
     steps:
       - id: is-release-candidate
-        run: echo "::set-output name=match::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] && echo "true" || echo "false")"
+        run: |
+          if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+            echo "::set-output name=match::1"
+          fi
       - id: is-release
-        run: echo "::set-output name=match::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "true" || echo "false")"
-      - id: is-release2
         run: |
           if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "::set-output name=match::1"
@@ -28,11 +29,9 @@ jobs:
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-      - if: steps.is-release-candidate.outputs.match == 'true'
+      - if: steps.is-release-candidate.outputs.match
         run: echo "release-candidate"
-      - if: steps.is-release.outputs.match == 'true'
-        run: echo "release"
-      - if: steps.is-release2.outputs.match
+      - if: steps.is-release.outputs.match
         run: echo "release"
       - if: steps.docker_meta.outputs.tags
         run: echo "other"
