@@ -14,6 +14,11 @@ jobs:
         run: echo "::set-output name=match::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] && echo "true" || echo "false")"
       - id: is-release
         run: echo "::set-output name=match::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "true" || echo "false")"
+      - id: is-release2
+        run: |
+          if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::set-output name=match::1"
+          fi
       - name: Docker meta
         id: docker_meta
         uses: docker/metadata-action@v3
@@ -26,6 +31,8 @@ jobs:
       - if: steps.is-release-candidate.outputs.match == 'true'
         run: echo "release-candidate"
       - if: steps.is-release.outputs.match == 'true'
+        run: echo "release"
+      - if: steps.is-release2.outputs.match
         run: echo "release"
       - if: steps.docker_meta.outputs.tags
         run: echo "other"
