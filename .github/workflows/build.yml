@@ -27,3 +27,5 @@ jobs:
         run: echo "release-candidate"
       - if: steps.is-release.outputs.match == 'true'
         run: echo "release"
+      - if: steps.docker_meta.outputs.tags
+        run: echo "other"
