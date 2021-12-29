@@ -22,7 +22,7 @@ jobs:
               echo ::set-output name=match::true
           fi
       - id: match
-        run: echo "::set-output name=dir::$("${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$)"
+        run: echo "::set-output name=dir::$([[ "${{ github.event.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "true" || echo "false")"
       - name: Docker meta
         id: docker_meta
         uses: docker/metadata-action@v3
